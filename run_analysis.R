@@ -1,3 +1,4 @@
+
 ## This script does the following:
 ## 1. Merges the training and the test sets to create one data set.
 ## 2. Extracts only the measurements on the mean and standard deviation for each measurement.
@@ -7,6 +8,7 @@
 
 download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", destfile = "HumanTracking.zip")
 unzip("HumanTracking.zip")
+setwd("UCI HAR Dataset")
 
 library(reshape2)
 
@@ -17,21 +19,21 @@ activity_labels <- read.table("activity_labels.txt")
 setwd(paste(getwd(), "train", sep = "/"))
 
 #Assign train variable names to each file according to their description from the README.txt
-    subject_train <- read.table("subject_train.txt")
-    train_set <- read.table("X_train.txt")
-    train_label <- read.table("y_train.txt")
+subject_train <- read.table("subject_train.txt")
+train_set <- read.table("X_train.txt")
+train_label <- read.table("y_train.txt")
 
 #This is only for future use    
-        #setwd(paste(getwd(), "Inertial Signals/", sep = "/"))
-        #    body_acc_x_train <-  read.table("body_acc_x_train.txt")
-        #    body_acc_y_train <-  read.table("body_acc_y_train.txt")
-        #    body_acc_z_train <-  read.table("body_acc_z_train.txt") 
-        #    body_gyro_x_train <-  read.table("body_gyro_x_train.txt")
-        #    body_gyro_y_train <-  read.table("body_gyro_y_train.txt")
-        #    body_gyro_z_train <-  read.table("body_gyro_z_train.txt")
-        #    total_acc_x_train <-  read.table("total_acc_x_train.txt")
-        #    total_acc_y_train <-  read.table("total_acc_y_train.txt")
-        #    total_acc_z_train <-  read.table("total_acc_z_train.txt")
+#setwd(paste(getwd(), "Inertial Signals/", sep = "/"))
+#    body_acc_x_train <-  read.table("body_acc_x_train.txt")
+#    body_acc_y_train <-  read.table("body_acc_y_train.txt")
+#    body_acc_z_train <-  read.table("body_acc_z_train.txt") 
+#    body_gyro_x_train <-  read.table("body_gyro_x_train.txt")
+#    body_gyro_y_train <-  read.table("body_gyro_y_train.txt")
+#    body_gyro_z_train <-  read.table("body_gyro_z_train.txt")
+#    total_acc_x_train <-  read.table("total_acc_x_train.txt")
+#    total_acc_y_train <-  read.table("total_acc_y_train.txt")
+#    total_acc_z_train <-  read.table("total_acc_z_train.txt")
 
 setwd("..")
 
@@ -39,21 +41,21 @@ setwd("..")
 setwd(paste(getwd(), "test", sep = "/"))
 
 #Assign test variable names to each file according to their description from the README.txt
-    subject_test <- read.table("subject_test.txt")
-    test_set <- read.table("X_test.txt")
-    test_label <- read.table("y_test.txt")
-    
+subject_test <- read.table("subject_test.txt")
+test_set <- read.table("X_test.txt")
+test_label <- read.table("y_test.txt")
+
 #This is only for future use      
-        #setwd(paste(getwd(), "Inertial Signals/", sep = "/"))
-        #    body_acc_x_test <-  read.table("body_acc_x_test.txt")
-        #    body_acc_y_test <-  read.table("body_acc_y_test.txt")
-        #    body_acc_z_test <-  read.table("body_acc_z_test.txt") 
-        #    body_gyro_x_test <-  read.table("body_gyro_x_test.txt")
-        #    body_gyro_y_test <-  read.table("body_gyro_y_test.txt")
-        #    body_gyro_z_test <-  read.table("body_gyro_z_test.txt")
-        #    total_acc_x_test <-  read.table("total_acc_x_test.txt")
-        #    total_acc_y_test <-  read.table("total_acc_y_test.txt")
-        #    total_acc_z_test <-  read.table("total_acc_z_test.txt")
+#setwd(paste(getwd(), "Inertial Signals/", sep = "/"))
+#    body_acc_x_test <-  read.table("body_acc_x_test.txt")
+#    body_acc_y_test <-  read.table("body_acc_y_test.txt")
+#    body_acc_z_test <-  read.table("body_acc_z_test.txt") 
+#    body_gyro_x_test <-  read.table("body_gyro_x_test.txt")
+#    body_gyro_y_test <-  read.table("body_gyro_y_test.txt")
+#    body_gyro_z_test <-  read.table("body_gyro_z_test.txt")
+#    total_acc_x_test <-  read.table("total_acc_x_test.txt")
+#    total_acc_y_test <-  read.table("total_acc_y_test.txt")
+#    total_acc_z_test <-  read.table("total_acc_z_test.txt")
 setwd("..")
 
 
@@ -85,15 +87,14 @@ all_train <- cbind(subject_train, all_train)
 
 #Merge test and train sets by rows
 all_data <- rbind(all_test, all_train)
-all_data <- all_data[, grep("mean()|std()", features$V2)]
+all_data <- all_data[, grep("mean|std", features$V2)]
 
 
 #Tidy up data
 melted_data <- melt(all_data, id=c("subjectID","Activity_Label"))
-tidy_data <- dcast(melted, subjectID+Activity_Label ~ variable, mean)
+tidy_data <- dcast(melted_data, subjectID+Activity_Label ~ variable, mean)
 
 #Ensure only mean or std gets output
-tidy_data <- tidy_data[, c(which(names(tidy_data) == c("subjectID", "Label_of_Act", "ID_of_Act")), grep("mean()|std()", names(tidy_data)))]
+tidy_data <- tidy_data[, c(which(names(tidy_data) == c("subjectID", "Label_of_Act", "ID_of_Act")), grep("mean|std", names(tidy_data)))]
 
 write.table(tidy_data, file = "tidy_data.txt") 
-
