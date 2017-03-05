@@ -87,14 +87,13 @@ all_train <- cbind(subject_train, all_train)
 
 #Merge test and train sets by rows
 all_data <- rbind(all_test, all_train)
-all_data <- all_data[, grep("mean|std", features$V2)]
+all_data <- all_data[, grep("mean|std", names(all_data))]
 
 
 #Tidy up data
 melted_data <- melt(all_data, id=c("subjectID","Activity_Label"))
 tidy_data <- dcast(melted_data, subjectID+Activity_Label ~ variable, mean)
 
-#Ensure only mean or std gets output
-tidy_data <- tidy_data[, c(which(names(tidy_data) == c("subjectID", "Label_of_Act", "ID_of_Act")), grep("mean|std", names(tidy_data)))]
+
 
 write.table(tidy_data, file = "tidy_data.txt") 
