@@ -87,7 +87,7 @@ all_train <- cbind(subject_train, all_train)
 
 #Merge test and train sets by rows
 all_data <- rbind(all_test, all_train)
-all_data <- all_data[, grep("mean|std", names(all_data))]
+all_data <- all_data[, c(1:3,grep("mean|std", names(all_data)))]
 
 
 #Tidy up data
