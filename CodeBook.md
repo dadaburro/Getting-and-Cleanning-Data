@@ -4,7 +4,7 @@
 The reshape2 library is used to use the dcast function which facilitates the final melting of the data.
 
 ##Datasets
-###Feaures an labels
+###Features an labels
 "features" is the first variable created. It takes the information stored in the features.txt file, which contains most the variables of interest of the UCI Human Activity Research with its corresponding identifier. All of which comes from the sensors used to gather data and transformed somehow, like extracting the mean and std.
 
 "activity_labels" variable is a table containing the info of the activity_labels.txt
